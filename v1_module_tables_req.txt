@@ -1,0 +1,113 @@
+#Copyright 2025-26 Beta ORI Inc. Canada. All Rights Reserved 
+# Author: Awase Khirni Syed 
+# Jalwa On Demand Video Streaming Platform Version 1
+
+Id	Module Name	Table Name	Description & Business Case	Primary Users
+M01	User Identity & Authentication	users / tbl_user	Core user account hub storing credentials, personal details, subscription status, and parental control flags. Supports multi-auth methods (OTP, Social).	All Users, Admins
+M01	User Identity & Authentication	user_profiles	Extended profile data including bios, expertise, and external social links for creator/influencer identity representation.	Creators, Subscribers
+M01	User Identity & Authentication	user_multi_profiles	Manages sub-profiles under a master account for family/household streaming with individualized watch histories and restrictions.	Family Accounts
+M01	User Identity & Authentication	user_providers	Maps OAuth providers (Google, Apple, FB) to internal accounts for seamless social login and identity resolution.	All Users
+M01	User Identity & Authentication	password_resets	Stores time-limited tokens for secure password recovery requests.	All Users
+M01	User Identity & Authentication	tbl_avatar	Library of pre-approved avatar images for profile customization with multi-storage support.	All Users
+M01	User Identity & Authentication	addresses	Structured physical address data for billing, geo-targeting, and regional compliance.	Subscribers, Finance
+M02	Access Control & RBAC	roles	Defines system roles (Admin, User, Creator) for segregation of duties and governance.	Admins, Security
+M02	Access Control & RBAC	permissions	Granular system permissions for CRUD actions across all platform modules.	Admins, Developers
+M02	Access Control & RBAC	model_has_roles	Polymorphic mapping of users/models to assigned roles.	Admins, Security
+M02	Access Control & RBAC	model_has_permissions	Direct exception-based permission grants bypassing role inheritance.	Admins, Security
+M02	Access Control & RBAC	role_has_permissions	Junction table defining capability matrices for each role.	Admins, Security
+M02	Access Control & RBAC	modules	Defines system feature modules for granular permission assignment and dynamic toggling.	Admins, DevOps
+M02	Access Control & RBAC	personal_access_tokens	Laravel Sanctum API tokens for secure third-party and mobile app authentication.	Developers, API Clients
+M02	Access Control & RBAC	tbl_admin	Administrative user credentials and access control for the back-office CMS.	Platform Admins
+M03	Content Catalog & Metadata	entertainments / tbl_video / tbl_tv_show	Master catalog for movies, TV shows, and standalone videos with metadata, pricing, and SEO fields.	Content Managers
+M03	Content Catalog & Metadata	episodes / tbl_tv_show_video	Individual episode records with runtime, access tiers, and quality settings for series navigation.	Content Managers
+M03	Content Catalog & Metadata	seasons / tbl_season	Season-level metadata for episodic content organization and batch monetization.	Content Managers
+M03	Content Catalog & Metadata	videos / tbl_shorts	Standalone short-form and vertical video content metadata for mobile-first engagement.	Creators, Content Ops
+M03	Content Catalog & Metadata	tbl_shorts_episode	Individual short-form episodes within serialized vertical feeds.	Creators
+M03	Content Catalog & Metadata	clips	Highlight/preview clips linked to parent content for social sharing and trailers.	Marketing, Creators
+M03	Content Catalog & Metadata	cast_crew / tbl_cast	Talent database with bios, TMDB IDs, and profile images for filmography tracking.	Content Managers
+M03	Content Catalog & Metadata	genres / tbl_category	Content genre/category taxonomy for navigation and algorithmic sorting.	Content Managers
+M03	Content Catalog & Metadata	tbl_type	Top-level content type classification (Movies, TV, Shorts, etc.) for navigation architecture.	Content Managers
+M03	Content Catalog & Metadata	tbl_language	Language taxonomy for content filtering and localized discovery.	Content Managers
+M03	Content Catalog & Metadata	tbl_channel	Curated channel definitions for linear/semi-linear viewing experiences.	Content Curators
+M03	Content Catalog & Metadata	entertainment_gener_mapping	Many-to-many junction for content-to-genre tagging.	System
+M03	Content Catalog & Metadata	entertainment_talent_mapping	Many-to-many junction for content-to-cast/crew attribution.	System
+M03	Content Catalog & Metadata	entertainment_country_mapping	Territorial licensing links enforcing geo-restrictions and compliance.	Legal, Content Ops
+M04	Content Discovery & UI Layout	tbl_banner / banners	Promotional banner configurations for home screens and secondary surfaces.	Marketing, Curators
+M04	Content Discovery & UI Layout	tbl_home_section	Configurable home screen section layouts (manual/dynamic) for editorial and algorithmic curation.	Product, UX
+M04	Content Discovery & UI Layout	mobile_settings	Mobile-specific UI/UX configurations for section ordering and visibility toggles.	Mobile Devs, Product
+M05	User Engagement & Behavioral Analytics	entertainment_views / tbl_view	Individual view event records for popularity analytics and trending calculations.	Data Analysts
+M05	User Engagement & Behavioral Analytics	continue_watch / tbl_video_watch	Resume points for cross-device playback continuity and "Continue Watching" features.	All Users
+M05	User Engagement & Behavioral Analytics	watchlists / tbl_bookmark	User-curated saved content lists for future engagement and preference signaling.	All Users
+M05	User Engagement & Behavioral Analytics	likes / tbl_like	Explicit sentiment signals (like/dislike) for recommendation tuning and social proof.	All Users
+M05	User Engagement & Behavioral Analytics	reviews	Text reviews and star ratings for social proof and qualitative feedback.	All Users
+M05	User Engagement & Behavioral Analytics	tbl_comment	Threaded user-generated comments with moderation flags for community interaction.	All Users, Moderators
+M05	User Engagement & Behavioral Analytics	user_search_histories	Search query logs for autocomplete, trending analysis, and UX optimization.	Product, Data Scientists
+M05	User Engagement & Behavioral Analytics	user_watch_histories	Complete historical watch records for behavioral analytics and churn prediction.	Data Scientists
+M05	User Engagement & Behavioral Analytics	user_reminder	User-set reminders for content premieres and release dates.	All Users
+M06	Community & Social Interaction	(Covered in M05 via Comments, Likes, Reviews)	Social interaction tables are consolidated under Engagement for unified sentiment analysis.	
+M07	Communication & Notification Engine	notifications / tbl_notification	Platform notification records with read status and payload data.	All Users
+M07	Communication & Notification Engine	notification_templates	Reusable notification templates for multi-channel delivery (Push, Email, Webhook).	Marketing, Product
+M07	Communication & Notification Engine	notification_template_content_mapping	Localized content mapping for templates supporting personalization variables.	Marketing, Localization
+M07	Communication & Notification Engine	tbl_read_notification	Read/dismissal tracking for notification fatigue analysis and optimization.	Product, Data Analysts
+M07	Communication & Notification Engine	tbl_notification_configuration	Event-driven trigger configurations for push/email balance per event type.	Product, DevOps
+M08	Subscription & Billing Lifecycle	plan / tbl_package	Subscription tier definitions with pricing, duration, and feature levels.	Finance, Product
+M08	Subscription & Billing Lifecycle	planlimitation / tbl_package_detail	Feature gating rules and detailed tier descriptions for transparent billing.	Finance, Product
+M08	Subscription & Billing Lifecycle	planlimitation_mapping	Dynamic mapping of plans to specific numeric/JSON limitations.	Finance, DevOps
+M08	Subscription & Billing Lifecycle	subscriptions	Active/inactive subscription state tracking with start/end dates and device associations.	Finance, Support
+M08	Subscription & Billing Lifecycle	subscriptions_transactions / tbl_transaction	Immutable financial ledger for subscription payments, taxes, and gateway IDs.	Finance, Audit
+M08	Subscription & Billing Lifecycle	coupons / tbl_coupon	Promotional discount codes with validity windows and usage limits.	Marketing, Finance
+M08	Subscription & Billing Lifecycle	coupon_subscription_plan	Mapping coupons to eligible plans for targeted promotions.	Marketing
+M08	Subscription & Billing Lifecycle	user_coupon_redeem	User-level redemption tracking to prevent double-dipping and analyze ROI.	Finance, Marketing
+M09	Payment & Monetization Infrastructure	tbl_payment_option	Multi-gateway configuration (Stripe, PayPal, Razorpay, etc.) with credential management.	Finance, DevOps
+M09	Payment & Monetization Infrastructure	taxes	Regional tax rules (GST, VAT) for automated checkout calculation.	Finance, Legal
+M09	Payment & Monetization Infrastructure	currencies	Supported currency definitions for global pricing and localization.	Finance, Localization
+M09	Payment & Monetization Infrastructure	countries	Country metadata for geo-targeting, tax jurisdiction, and licensing.	Legal, Finance
+M09	Payment & Monetization Infrastructure	pay_per_views / tbl_rent_price_list	Transactional PPV/rental access records with expiry windows.	Finance, Users
+M09	Payment & Monetization Infrastructure	payperviewstransactions / tbl_rent_transaction	Financial ledger for micro-transactions and rental revenue reconciliation.	Finance, Audit
+M10	Creator Economy & Revenue Sharing	tbl_producer	Creator/producer account profiles with wallet balances and earnings tracking.	Creators, Finance
+M10	Creator Economy & Revenue Sharing	tbl_withdrawal_request	Producer payout request workflow with status tracking for financial operations.	Creators, Finance
+M11	Device Management & Multi-Screen Sync	devices / tbl_device_sync	Device registration and synchronization records for concurrency control.	All Users, Security
+M11	Device Management & Multi-Screen Sync	tbl_device_watching	Real-time active session tracking for concurrent stream limit enforcement.	Security, System
+M11	Device Management & Multi-Screen Sync	tbl_tv_login / tv_login_sessions	TV device pairing sessions using code-based authentication flows.	TV Users, Support
+M11	Device Management & Multi-Screen Sync	web_qr_sessions	Web-to-TV QR authentication flows for secure, frictionless login.	TV Users, Support
+M12	Streaming & Content Delivery	entertainment_stream_content_mapping	Adaptive bitrate streaming URL mappings for movies/TV shows.	Infrastructure, CDN
+M12	Streaming & Content Delivery	episode_stream_content_mapping	Episode-level streaming URL mappings for quality tier management.	Infrastructure, CDN
+M12	Streaming & Content Delivery	video_stream_content_mapping	Short-form/standalone video streaming URL mappings.	Infrastructure, CDN
+M12	Streaming & Content Delivery	subtitles	Multi-language subtitle file management for accessibility and localization.	Accessibility, Localization
+M12	Streaming & Content Delivery	entertainment_downloads	User-initiated offline download records with DRM and quality tracking.	Mobile Users
+M12	Streaming & Content Delivery	entertainment_download_mapping	Centralized download asset URLs for offline content routing.	Infrastructure
+M12	Streaming & Content Delivery	episode_download_mapping	Episode-specific download mappings for tiered offline access.	Infrastructure
+M12	Streaming & Content Delivery	video_download_mappings	Short-form video download mappings for mobile optimization.	Infrastructure
+M13	Live TV & Broadcasting	livetvs	Foundational live TV stream metadata and configuration.	Broadcast Ops
+M13	Live TV & Broadcasting	live_tv_category	Live channel categorization (News, Sports, etc.) for navigation.	Broadcast Ops
+M13	Live TV & Broadcasting	live_tv_channel	Individual live channel management with access tiers and branding.	Broadcast Ops
+M13	Live TV & Broadcasting	live_tv_stream_content_mapping	Live stream URL mapping with failover and backup server configuration.	Broadcast Ops, Infrastructure
+M14	Advertising & Ad Inventory Management	ads	Advertisement campaign metadata and lifecycle tracking.	Ad Ops, Marketing
+M14	Advertising & Ad Inventory Management	vast_ads_setting	VAST-compliant video ad configuration for programmatic insertion.	Ad Ops, Tech
+M14	Advertising & Ad Inventory Management	custom_ads_setting	Direct-sold custom banner/image ad placement rules and targeting.	Ad Sales, Marketing
+M15	Analytics & Business Intelligence	activity_log	Comprehensive audit trail for system/user activities and compliance.	Security, Compliance
+M15	Analytics & Business Intelligence	user_search_histories	(Also in M05) Search trends for BI and product optimization.	Data Analysts
+M15	Analytics & Business Intelligence	entertainment_views	(Also in M05) View metrics for content performance reporting.	Data Analysts
+M16	Platform Configuration & Settings	settings / tbl_general_setting	System-wide key-value configuration for features, branding, and ops.	DevOps, Admins
+M16	Platform Configuration & Settings	constants	Standardized enums for UI rendering, validation, and business logic.	Developers
+M16	Platform Configuration & Settings	tbl_smtp_setting	Email server configuration for transactional deliverability.	DevOps, Support
+M16	Platform Configuration & Settings	tbl_storage_setting	Cloud storage provider credentials (AWS, Wasabi) for asset routing.	DevOps, Infrastructure
+M16	Platform Configuration & Settings	tbl_social_link	Social media platform link configurations for brand presence.	Marketing
+M17	Legal, Compliance & CMS	pages / tbl_page	Static CMS pages for legal policies, terms, and brand storytelling.	Legal, Marketing
+M17	Legal, Compliance & CMS	faqs	Frequently asked questions for self-service support and retention.	Support, Users
+M17	Legal, Compliance & CMS	seo	SEO metadata management for organic search visibility.	Marketing, SEO Specialists
+M18	File & Media Asset Management	media	Uploaded media file metadata with responsive image and conversion configs.	Content Ops, DevOps
+M18	File & Media Asset Management	filemanagers	Centralized file inventory for admin content management and access control.	Admins, Content Ops
+M19	Geographic & Localization Framework	languages	UI translation key-value mappings for multi-language support.	Localization, Devs
+M19	Geographic & Localization Framework	states	State/province metadata for address validation and regional tax.	Finance, Logistics
+M19	Geographic & Localization Framework	cities	City metadata for hyper-local targeting and address resolution.	Marketing, Logistics
+M19	Geographic & Localization Framework	worlds	Advanced geographic metadata for granular territorial licensing.	Legal, Global Ops
+M20	System Operations & Queue Management	jobs	Background queue jobs for async processing (transcoding, emails).	DevOps, System
+M20	System Operations & Queue Management	job_batches	Grouped job execution tracking for bulk operations.	DevOps, System
+M20	System Operations & Queue Management	failed_jobs	Permanently failed job logs for debugging and recovery.	DevOps, SRE
+M20	System Operations & Queue Management	migrations	Database schema version control for CI/CD and deployments.	Developers, DevOps
+M20	System Operations & Queue Management	sessions	Web session data for stateful interactions and security monitoring.	Security, Web Devs
+M20	System Operations & Queue Management	webhook_calls	Outgoing webhook logs for third-party integration reliability.	DevOps, Integrations
+M20	System Operations & Queue Management	installers	Platform installation/setup process tracking for SaaS provisioning.	DevOps, Ops
+M20	System Operations & Queue Management	service_providers	Third-party vendor integration management and credential tracking.	DevOps, Partnerships
+M20	System Operations & Queue Management	tbl_onboarding_screen / onboardings	First-time user experience carousel content for activation.	Product, UX
